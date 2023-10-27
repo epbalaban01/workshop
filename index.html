@@ -96,23 +96,20 @@ h1, h2, h3, h4, h5, h6 {
 
 <script>
 // JavaScript code for fetching menu items and scrolling to top
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", function () {
   // Fetch menu items from the API
   fetch('https://northwind.vercel.app/api/products')
     .then(response => response.json())
     .then(data => {
-      // Randomly select 5 menu items
-      const menuItems = getRandomMenuItems(data, 5);
-
+      const menuItems = data.slice(0, 5); // İlk 5 ürünü al
       const menuList = document.getElementById('menuItems');
-
+      
       menuItems.forEach(item => {
         const menuItem = document.createElement('li');
         menuItem.innerHTML = `
           <h4>${item.Name}</h4>
           <p>${item.QuantityPerUnit}</p>
           <p>$${item.UnitPrice.toFixed(2)}</p>
-          <img src="${item.ImageUrl}" alt="${item.Name}" width="100" height="100">
         `;
         menuList.appendChild(menuItem);
       });
@@ -126,17 +123,10 @@ document.addEventListener('DOMContentLoaded', () => {
   scrollTopButton.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
-
-  // Function to get a random selection of menu items
-  function getRandomMenuItems(menuData, numItems) {
-    const randomMenuItems = [];
-    for (let i = 0; i < numItems; i++) {
-      const randomIndex = Math.floor(Math.random() * menuData.length);
-      randomMenuItems.push(menuData[randomIndex]);
-    }
-    return randomMenuItems;
-  }
 });
 </script>
+
+<script src="react.js"></script>
+
 </body>
 </html>
