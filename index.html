@@ -25,90 +25,66 @@
 
   <!-- Footer -->
   <footer class="w3-center w3-light-grey w3-padding-32">
-    <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-text-green">w3.css</a></p>
+    <button id="scrollToTopButton" class="w3-button w3-light-grey w3-section">
+      <i class="fas fa-arrow-up"></i> Scroll to Top
+    </button>
   </footer>
 
-  <!-- Load React and ReactDOM from a CDN -->
-  <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+  <!-- Load FontAwesome for the scroll-to-top button -->
+  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 
-  <!-- Your React component -->
-  <script type="text/babel">
-    // Define a React component
-    class App extends React.Component {
-      constructor() {
-        super();
-        this.state = {
-          menuItems: [], // Holds the menu items data
-        };
-      }
-
-      // Fetch menu items from an API
-      fetchMenuItems() {
-        fetch('https://northwind.vercel.app/api/products')
-          .then(response => response.json())
-          .then(data => {
-            this.setState({ menuItems: data });
-          })
-          .catch(error => {
-            console.error('Error fetching menu items:', error);
-          });
-      }
-
-      componentDidMount() {
-        this.fetchMenuItems();
-      }
-
-      render() {
-        return (
-          <div>
-            {/* Your existing code goes here */}
-            {/* ... */}
-            {/* Menu Section */}
-            <div className="w3-row w3-padding-64" id="menu">
-              <div className="w3-col l6 w3-padding-large">
-                <h1 className="w3-center">Our Menu</h1>
-                <ul>
-                  {this.state.menuItems.map(item => (
-                    <li key={item.ProductID}>
-                      <h4>{item.ProductName}</h4>
-                      <p>Price: ${item.UnitPrice.toFixed(2)}</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="w3-col l6 w3-padding-large">
-                <img
-                  src="https://www.w3schools.com/w3images/tablesetting.jpg"
-                  className="w3-round w3-image w3-opacity-min"
-                  alt="Menu"
-                  style={{ width: "100%" }}
-                />
-              </div>
-            </div>
-          </div>
-        );
-      }
-    }
-
-    // Render the React component
-    ReactDOM.render(<App />, document.getElementById("root"));
-  </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+  <!-- Your JavaScript code -->
   <script>
-    // Babel for converting JSX
-    // Define a simple function for converting JSX into real HTML
-    function transformJSX() {
-      const rawJSX = document.querySelector("script[type='text/babel']").textContent;
-      const transformedCode = Babel.transform(rawJSX, {
-        presets: ['es2015', 'react']
-      }).code;
-      eval(transformedCode);
+    // Function to scroll to the top of the page smoothly
+    function scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     }
 
-    // Run the JSX transformation function
-    transformJSX();
+    // Fetch menu items from the API
+    function fetchMenuItems() {
+      fetch('https://northwind.vercel.app/api/products')
+        .then(response => response.json())
+        .then(data => {
+          // Randomly select 5 menu items
+          const randomMenuItems = getRandomMenuItems(data, 5);
+
+          const menuList = document.getElementById('menuItems');
+          menuList.innerHTML = '';
+
+          randomMenuItems.forEach(item => {
+            const menuItem = document.createElement('li');
+            menuItem.innerHTML = `
+              <h4>${item.Name}</h4>
+              <p>${item.QuantityPerUnit}</p>
+              <p>$${item.UnitPrice.toFixed(2)}</p>
+            `;
+            menuList.appendChild(menuItem);
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching menu items:', error);
+        });
+    }
+
+    // Function to get a random selection of menu items
+    function getRandomMenuItems(menuData, numItems) {
+      const randomMenuItems = [];
+      for (let i = 0; i < numItems; i++) {
+        const randomIndex = Math.floor(Math.random() * menuData.length);
+        randomMenuItems.push(menuData[randomIndex]);
+      }
+      return randomMenuItems;
+    }
+
+    // Add a click event listener to the scroll-to-top button
+    const scrollToTopButton = document.getElementById('scrollToTopButton');
+    scrollToTopButton.addEventListener('click', scrollToTop);
+
+    // Initial fetch when the page loads
+    fetchMenuItems();
   </script>
 </body>
 
